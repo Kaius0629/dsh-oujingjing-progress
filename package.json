@@ -1,0 +1,71 @@
+{
+  "name": "dsh-oujingjing-progress",
+  "version": "0.1.0",
+  "description": "DSH 插件：桌面上养一只鲸娘，有文件在下载时她会告诉你下的是什么、下了多少、还剩多久；没有下载时她就站在那儿打盹。",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "download",
+    "progress",
+    "下载进度"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaius0629/dsh-oujingjing-progress.git"
+  },
+  "homepage": "https://github.com/Kaius0629/dsh-oujingjing-progress#readme",
+  "bugs": {
+    "url": "https://github.com/Kaius0629/dsh-oujingjing-progress/issues"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/smoke.mjs && node test/client.smoke.mjs"
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "engines": {
+    "dsh": ">=0.2.0-rc.1",
+    "node": ">=18"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

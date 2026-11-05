@@ -1,0 +1,8 @@
+# 统一换行，别让 Windows 检出把整个仓库变成「全改过」
+* text=auto eol=lf
+
+# 图片按二进制处理
+*.png binary
+*.webp binary
+*.jpg binary
+*.svg text

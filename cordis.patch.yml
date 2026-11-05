@@ -1,0 +1,28 @@
+# 欧鲸鲸进度条 —— 插件的默认配置
+#
+# 这个文件是「出厂默认」，升级时会被覆盖。你在设置页改的皮肤、显隐、
+# 监控目录都存在 ~/.dsh/oujingjing-progress/settings.json，不会被动到。
+#
+#   skin            用哪套形象（assets/ 下的目录名）
+#   watchDirs       盯哪些文件夹；留空 = 只看当前会话目录和宿主进程的 cwd
+#   scanIntervalMs  多久扫一次
+#   idleMs          文件多久没长就认为下完了
+#   lingerMs        「下完了」那个状态在屏幕上留多久
+#   minBytes        小于这个体积的文件直接忽略，免得缩略图、临时文件刷屏
+#   staleMs         超过这么久没被写过，就当它根本没在下
+#   knownTotals     手动补总大小，第一次下也能看到百分比和剩余时间
+#   snapshotFile    填了就把每轮状态写一份 JSON 到磁盘，排查用
+
+- insert:
+    - id: oujingjing-progress
+      name: 'dsh-oujingjing-progress'
+      config:
+        skin: "blue"
+        watchDirs: []
+        scanIntervalMs: 700
+        idleMs: 4000
+        lingerMs: 2500
+        minBytes: 65536
+        staleMs: 20000
+        knownTotals: []
+        snapshotFile: ''

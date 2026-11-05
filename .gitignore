@@ -1,0 +1,28 @@
+# 依赖与产物
+node_modules/
+*.tgz
+
+# 本机测试留下的东西
+_smoke_dl/
+_smoke_snap*.json
+_smoke_snap*.txt
+
+# 诊断探针
+ojj-status*.json
+ojj-status*.txt
+_ojj_probe/
+
+# 出图脚本的中间产物
+tools/__pycache__/
+__pycache__/
+*.pyc
+
+# 源图（太大，也不该进仓库）
+docs/raw/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
