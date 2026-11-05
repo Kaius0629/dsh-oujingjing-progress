@@ -1,16 +1,45 @@
-# 欧鲸鲸进度条 · dsh-oujingjing-progress
+# 🐋 欧鲸鲸进度条
 
-> Agent 在后台闷头下一个 2 GB 的模型，你只能盯着聊天框干等。
+<p align="center">
+  <img alt="platform" src="https://img.shields.io/badge/platform-DeepSeek%20Harness%20Web-8A2BE2">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-orange">
+  <img alt="deps" src="https://img.shields.io/badge/dependencies-0-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-60%20passed-brightgreen">
+</p>
+
+<p align="center">
+  <img src="docs/demo.gif" width="220" alt="演示：进度往上爬，下完换表情">
+</p>
+
+> **Agent 在后台闷头下一个 2 GB 的模型，你只能盯着聊天框干等。**
 >
-> 这个插件在桌面上养一只鲸娘：磁盘上有东西在变大，她就抱着碗开始吃，顺便告诉你下的是什么、下了多少、还剩多久。
+> 这个插件让一只鲸娘住进 DSH —— 磁盘上有东西在变大，她就抱着碗吃，
+> 顺便报出文件名、速度、百分比、还剩多久。
 >
-> **下完了、没在下了，她就安静站着打盹，不吵你。**
+> 不解析命令行，不认下载器：curl、aria2、浏览器、你自己写的脚本，谁的下载都看得见。
+
+**装**（一条命令）：
+
+```
+plugin_manager action=install_bundle target="github:Kaius0629/dsh-oujingjing-progress"
+```
+
+装完打开「设置 → 鲸鲸进度条」，点「选择文件夹…」把你的下载目录加进去，完事。
 
 一个 [DeepSeek Harness](https://github.com/deepseek-ai) 的 bundle 插件。零依赖、零构建、不改宿主代码。
 
-![挂件](docs/widget.png)
+## 🌊 为什么不是「又一个桌宠」
 
-## 四张脸
+DSH 里已经有二十多个桌宠，鲸娘女仆尤其多。
+
+它们的共同点是 —— 显示余额、token 消耗、任务状态、摸头喂食。
+
+**没有一个会告诉你下载进度。**
+
+这个插件只干一件事：把「磁盘上有个文件在变大」变成你一眼能看懂的东西。
+不监工、不统计、不催你干活，下完了她就安静站着打盹。
+
+## 🐋 四张脸
 
 ![四态](docs/states.png)
 
@@ -21,7 +50,7 @@
 | `done` | 下载结束 | 闭眼笑，气泡变绿，2.5 秒后退场 |
 | `idle` | 没有下载 | 正对着你，端着一只空碗等饭 |
 
-## 它凭什么知道你在下载
+## 🔍 它凭什么知道你在下载
 
 不解析命令行，不改下载方式，不要求你换下载器。
 
@@ -37,7 +66,7 @@
 
 只要字节最后落在被你盯着的目录里，就看得见。
 
-## 装
+## 📦 装
 
 ```
 plugin_manager action=install_bundle target="dsh-oujingjing-progress"
@@ -57,7 +86,7 @@ plugin_manager action=install_bundle target="<本仓库绝对路径>"
 
 装完把插件关掉再打开一次（`set_plugin enabled=false` → `enabled=true`）就会加载。
 
-## 用
+## 🎮 用
 
 **第一步：告诉她盯哪儿。** 打开「设置 → 鲸鲸进度条」，在「盯着哪些文件夹」里点「选择文件夹…」，把你的下载目录加进去。
 
@@ -74,7 +103,7 @@ plugin_manager action=install_bundle target="<本仓库绝对路径>"
 
 拖动她到屏幕任意位置，位置存在浏览器本地，下次打开还在那儿。
 
-## 气泡上的三行
+## 💬 气泡上的三行
 
 ```
 文件名.第几行太长会截断
@@ -85,7 +114,11 @@ plugin_manager action=install_bundle target="<本仓库绝对路径>"
 
 同时下好几个的时候，主显示最活跃的那个，右上角挂一个 `+N`，鼠标移上去展开列表。
 
-## 剩余时间是怎么算出来的
+真机截图（跑在一个真实的 DSH 会话里）：
+
+![实拍](docs/widget.png)
+
+## ⏱️ 剩余时间是怎么算出来的
 
 光看磁盘只知道「已经下了多少」。想知道「还剩多久」，必须知道**总共多大**。两条路：
 
@@ -108,7 +141,7 @@ knownTotals:
 
 **都没有的话**：显示「已下 25 MB」+ 一条来回流动的不确定条。不假装知道还剩多久。
 
-## 换成你自己的形象
+## 🎨 换成你自己的形象
 
 在 `assets/` 下新建一个目录，放四张同名的 PNG，然后在设置页点「＋」选这个文件夹：
 
@@ -126,7 +159,7 @@ assets/我的角色/
 设置页那个「＋」会把它复制进 `assets/`，所以原文件夹之后删掉也没关系。
 卸载插件时这些图会跟着走，想留着就自己备份一份。
 
-## 配套的默认形象
+## 👗 配套的默认形象
 
 仓库里带三套，都在 `assets/` 下：
 
@@ -139,7 +172,7 @@ assets/我的角色/
 自带的四态是「鲸娘」这个公共二创类型下的独立创作，用 ComfyUI 出的图 + `tools/` 里的脚本抠的背景，
 没有使用任何第三方角色资源库里的图片（那些库明确不随代码授权）。
 
-## 为什么它不会跟别人打架
+## 🛡️ 为什么它不会跟别人打架
 
 这是这个插件最在意的一件事。具体做法：
 
@@ -155,7 +188,7 @@ assets/我的角色/
 
 最坏的情况只有一个：她自己不显示。别的东西照常。
 
-## 已知的边界
+## ⚠️ 已知的边界
 
 说实话的部分：
 
@@ -166,7 +199,7 @@ assets/我的角色/
 - **Windows 上实测过。** macOS / Linux 理论上一样能跑（只用了 node 标准库），但没验证。
 - **它读的是磁盘增长，不是网络流量。** 不落盘的下载（`curl | tar -x`）看不见。
 
-## 高级配置
+## ⚙️ 高级配置
 
 `cordis.patch.yml` 是**出厂默认**，装的时候会被读一次。平时改东西走设置页就够了，
 下面这些只有想微调时才有用（改完要重装或重启）：
@@ -189,7 +222,7 @@ assets/我的角色/
 
 设置页改的东西存在 `~/.dsh/oujingjing-progress/settings.json`，升级不会覆盖。
 
-## 开发
+## 🔧 开发
 
 ```bash
 node test/smoke.mjs          # 宿主半侧：12 项，离线
@@ -200,6 +233,10 @@ node test/client.smoke.mjs   # 浏览器半侧：48 项，离线，不启动浏�
 
 `tools/` 里是出图用的脚本（抠背景、只调头发、四张拉齐、按参数重建）。
 它们默认从 `docs/raw/` 读源图，可以用环境变量 `OJJ_SRC` 指到别处。
+
+## 📺 视频介绍
+
+> 演示视频：**[B站 · {视频标题}]({B站链接})**（发布后补上）
 
 ## License
 
