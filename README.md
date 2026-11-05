@@ -192,8 +192,8 @@ assets/我的角色/
 ## 开发
 
 ```bash
-node test/smoke.mjs          # 宿主半侧：10 项，离线
-node test/client.smoke.mjs   # 浏览器半侧：43 项，离线，不启动浏览器
+node test/smoke.mjs          # 宿主半侧：12 项，离线
+node test/client.smoke.mjs   # 浏览器半侧：48 项，离线，不启动浏览器
 ```
 
 两套都是纯离线的，不需要 DSH 进程，也不需要真的下载。
