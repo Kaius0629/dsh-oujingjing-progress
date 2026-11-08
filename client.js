@@ -110,6 +110,11 @@ window.__ModuleLoader__.load({
   border-radius:0 0 13px 13px;overflow:hidden;background:rgba(255,255,255,.18);}
 [data-ojj-bubble-fill]{height:100%;background:#7dd3fc;transition:width .35s ease;}
 [data-ojj-bubble][data-bface="done"] [data-ojj-bubble-fill]{background:#6ee7b7;}
+/* ComfyUI 任务还没有耗时估算时：不冒充进度，让填充条自己流动 */
+[data-ojj-bubble-fill][data-indet]{
+  background:linear-gradient(90deg,rgba(125,211,252,.15),#7dd3fc 45%,#7dd3fc 55%,rgba(125,211,252,.15));
+  background-size:220% 100%;animation:ojj-flow 1.6s linear infinite;transition:none;}
+@keyframes ojj-flow{0%{background-position:180% 0}100%{background-position:-80% 0}}
 [data-ojj-widget][data-indet] [data-ojj-bubble-fill]{
   width:34% !important;animation:ojj-slide 1.5s ease-in-out infinite;}
 @keyframes ojj-slide{0%{transform:translateX(-130%)}100%{transform:translateX(330%)}}
@@ -407,8 +412,15 @@ window.__ModuleLoader__.load({
       let nameLine = ''
       let mainLine = ''
       let subLine = ''
+      const isComfy = Boolean(job) && job.source === 'comfy'
       if (poking) {
         mainLine = pokeLine || LINES[0]
+      } else if (job && isComfy) {
+        // ComfyUI 这条线：没有「下完」这个状态，任务消失就是结束。
+        // 有估算就报百分比，没有就老实说已经跑了多久 —— 不假装知道还剩多少。
+        nameLine = job.name
+        mainLine = job.percentText || job.bytesText || '生成中'
+        subLine = job.percentText ? job.bytesText + (job.etaText ? ' · ' + job.etaText : '') : job.totalText || '首次跑，还不知道要多久'
       } else if (job) {
         nameLine = job.name
         if (done) {
@@ -430,6 +442,8 @@ window.__ModuleLoader__.load({
               : job.bytesText || ''
         }
       }
+      // ComfyUI 任务没有百分比时，进度条画成「来回流动」而不是假装有进度
+      const indet = isComfy && !hasPercent
       const pct = hasPercent ? Math.max(2, Math.min(100, job.percent)) : 0
       const showBubble = Boolean(job) || poking
 
@@ -443,6 +457,7 @@ window.__ModuleLoader__.load({
           pct,
           showBar: Boolean(job) && !done,
           width: done ? '100%' : pct + '%',
+          indet,
         }
       }
       const snap = showBubble
@@ -487,7 +502,9 @@ window.__ModuleLoader__.load({
                 { 'data-ojj-bubble-bar': '', style: snap.showBar ? undefined : { opacity: 0 } },
                 h('div', {
                   'data-ojj-bubble-fill': '',
-                  style: { width: snap.width },
+                  // 没有估算的时候，填充条不冒充进度：宽度 100% 但走流动动画
+                  'data-indet': snap.indet ? '' : undefined,
+                  style: snap.indet ? { width: '100%' } : { width: snap.width },
                 }),
               ),
             )
@@ -513,7 +530,13 @@ window.__ModuleLoader__.load({
                     h(
                       'span',
                       { 'data-ojj-item-pct': '' },
-                      j.state === 'done' ? '✓' : j.percent != null ? j.percent.toFixed(0) + '%' : j.speedText || '…',
+                      j.source === 'comfy'
+                        ? j.percentText || j.bytesText || '生成中'
+                        : j.state === 'done'
+                          ? '✓'
+                          : j.percent != null
+                            ? j.percent.toFixed(0) + '%'
+                            : j.speedText || '…',
                     ),
                   ),
                 ),
@@ -537,6 +560,13 @@ window.__ModuleLoader__.load({
       const [dirMsg, setDirMsg] = React.useState('')
       const alive = React.useRef(true)
       React.useEffect(() => () => { alive.current = false }, [])
+
+      // ComfyUI 那一条的状态，全部从 /status 的 comfy 字段读
+      const comfy = (state && state.comfy) || {}
+      const comfyEnabled = Boolean(comfy.enabled)
+      const comfyUrl = comfy.url || ''
+      const comfyState = comfy.available
+      const comfyRunning = Number(comfy.running) || 0
 
       const load = React.useCallback(async () => {
         try {
@@ -798,6 +828,41 @@ window.__ModuleLoader__.load({
           ),
         ),
         dirMsg ? h('div', { 'data-ojj-note': '', 'data-ojj-msg': '' }, dirMsg) : null,
+
+        // ── ComfyUI 那条线 ──
+        h('div', { 'data-ojj-set-h': '' }, 'ComfyUI 出图进度'),
+        h(
+          'div',
+          { 'data-ojj-note': '' },
+          '打开后她会顺带盯着本地 ComfyUI：正在出图时也能看到进度。默认关，关着的时候一次网络请求都不发。',
+        ),
+        h(
+          'label',
+          { 'data-ojj-row': '' },
+          h('input', {
+            type: 'checkbox',
+            checked: Boolean(comfyEnabled),
+            disabled: busy,
+            onChange: (e) => save({ comfy: Boolean(e.target.checked) }),
+          }),
+          h('span', {}, '盯着 ' + (comfyUrl || 'http://127.0.0.1:8188')),
+        ),
+        comfyEnabled
+          ? h(
+              'div',
+              { 'data-ojj-note': '' },
+              comfyState === true
+                ? '✓ 连上了' + (comfyRunning ? '，眼下有 ' + comfyRunning + ' 个任务在跑' : '，眼下没任务')
+                : comfyState === false
+                  ? '连不上 —— 确认 ComfyUI 开着，或者地址填对了没有'
+                  : '还在探测……',
+            )
+          : null,
+        h(
+          'div',
+          { 'data-ojj-note': '' },
+          '第一次跑某个工作流时没有百分比（没见过就是不知道），跑过一次之后就能估出还剩多久。',
+        ),
       )
     }
 

@@ -2,9 +2,9 @@
 
 <p align="center">
   <img alt="platform" src="https://img.shields.io/badge/platform-DeepSeek%20Harness%20Web-8A2BE2">
-  <img alt="license" src="https://img.shields.io/badge/license-MIT-orange">
+  <img alt="license" src="https://img.shields.io/badge/code-MIT-orange"> <img alt="assets license" src="https://img.shields.io/badge/art-CC%20BY--NC--SA%204.0-lightgrey">
   <img alt="deps" src="https://img.shields.io/badge/dependencies-0-brightgreen">
-  <img alt="tests" src="https://img.shields.io/badge/tests-60%20passed-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-96%20passed-brightgreen">
 </p>
 
 <p align="center">
@@ -169,8 +169,28 @@ assets/我的角色/
 | `cute` | 同一只，配色更灰、更淡 |
 | `default` | 最早的一版，厚涂风，饱和度偏高 |
 
-自带的四态是「鲸娘」这个公共二创类型下的独立创作，用 ComfyUI 出的图 + `tools/` 里的脚本抠的背景，
-没有使用任何第三方角色资源库里的图片（那些库明确不随代码授权）。
+四态立绘用 ComfyUI 生成，再用 `tools/` 里的脚本抠背景、缩到 128×128。
+
+### 形象来源与授权
+
+形象属于中文社区里流传的「大肥鱼 / 鲸鱼娘」——DeepSeek 拟人化的同人形象。本插件的立绘是在这个形象基础上、用 AI 辅助重新绘制的二创。上游作者：
+
+| 作者 | 贡献 |
+|---|---|
+| [上善无形（上善）](https://space.bilibili.com/4456176) | 鲸鱼娘原始角色形象 |
+| [ZipZipPipe](https://space.bilibili.com/4168597) | 加入 DeepSeek 元素的女仆鲸鱼娘二次设计 |
+| [YunYueSama](https://github.com/YunYueSama/codex-deepseek-pet) | Q 版设定图参考 |
+| [xiaoweigen](https://github.com/xiaoweigen/deepseek-dafeiyu-assets) | 设定图改编与整理 |
+
+**这批立绘按 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 发布**——署名、非商业使用、相同方式共享。也就是说：
+
+- 你可以自由使用、修改、再分发这些图，但要保留上面的署名
+- **不能拿去商用**（免费开源插件本身不算商业用途）
+- 你基于这些图做的二创，也得用同样的 CC BY-NC-SA 4.0
+
+代码（`lib/`、`client.js`、`tools/`）仍然是 MIT，跟美术分开授权。详细说明见 [LICENSE-ASSETS](LICENSE-ASSETS)。
+
+想换成完全属于你自己的形象，看上面那节「换成你自己的形象」——只要四个文件名对得上，插件不在乎图是谁画的。
 
 ## 🛡️ 为什么它不会跟别人打架
 
@@ -218,18 +238,41 @@ assets/我的角色/
         staleMs: 20000          # 超过这么久没被写过，彻底当它不存在
         knownTotals: []         # 手动指定总量
         snapshotFile: ''        # 填了就每轮写一份状态 JSON，排查用
+        comfy: false            # 要不要顺带盯本地 ComfyUI 的出图进度
+        comfyUrl: 'http://127.0.0.1:8188'
 ```
 
 设置页改的东西存在 `~/.dsh/oujingjing-progress/settings.json`，升级不会覆盖。
 
+### ComfyUI 那条线
+
+`comfy: true` 打开后，她除了看文件，还会定时问一下本机 ComfyUI 在跑什么。
+**默认关，关着的时候一次网络请求都不发。**
+
+能显示什么，取决于见过没见过这类活：
+
+| 情况 | 显示 |
+|---|---|
+| 第一次跑这个工作流 | 「已跑 12 秒」——不知道要多久，就不装知道 |
+| 跑过一次之后 | 「约 67% · 还剩 8 秒」——用这台机器的历史耗时估的 |
+
+耗时按「节点类型 + 采样步数 + 画布尺寸」分组记忆，存在
+`~/.dsh/oujingjing-progress/comfy-times.json`，越跑越准。
+
+精度说明：ComfyUI 只把逐步骤的 progress 推给**提交任务的那个客户端**
+（`main.py` 里 `send_sync("progress", ..., client_id)`），插件不是提交者，拿不到。
+所以这里给的是**估算**，不是实测步数。界面上写的是「约」，不是确数。
+
 ## 🔧 开发
 
 ```bash
-node test/smoke.mjs          # 宿主半侧：12 项，离线
-node test/client.smoke.mjs   # 浏览器半侧：48 项，离线，不启动浏览器
+node test/smoke.mjs            # 宿主半侧：12 项，离线
+node test/client.smoke.mjs     # 浏览器半侧：48 项，离线，不启动浏览器
+node test/comfy.offline.mjs    # ComfyUI 那条线：24 项，假数据，不出图
+node test/comfy.integration.mjs # 端到端：起一个假 ComfyUI，验证快照能带出任务
 ```
 
-两套都是纯离线的，不需要 DSH 进程，也不需要真的下载。
+四套都是纯离线的，不需要 DSH 进程，也不需要真的下载或出图。合计 96 项。
 
 `tools/` 里是出图用的脚本（抠背景、只调头发、四张拉齐、按参数重建）。
 它们默认从 `docs/raw/` 读源图，可以用环境变量 `OJJ_SRC` 指到别处。
@@ -240,7 +283,12 @@ node test/client.smoke.mjs   # 浏览器半侧：48 项，离线，不启动浏�
 
 ## License
 
-MIT。角色插图同在本项目授权范围内，可自由替换。
+**代码 MIT**，可以商用、闭源、随便改。
+
+**立绘 CC BY-NC-SA 4.0**——是「大肥鱼 / 鲸鱼娘」的同人二创，需要署名、不能商用、二创同协议。
+署名名单和具体条款见 [LICENSE-ASSETS](LICENSE-ASSETS)。
+
+想避开这些限制，自己换一套图就行：插件只认 `assets/<皮肤名>/` 下的四个文件名。
 
 ---
 
@@ -253,4 +301,9 @@ It does not parse command lines and does not care which downloader you use.
 The only signal is **file mtime**: whatever is being written to a watched directory shows up.
 
 She stays on your desktop and naps while the disk is quiet.
-Zero dependencies, MIT.
+Zero dependencies.
+
+**License:** code is MIT. The character art is a fan derivative of the Chinese-community
+「大肥鱼 / 鲸鱼娘」 (DeepSeek personified) design and is released under
+**CC BY-NC-SA 4.0** — attribution, non-commercial, share-alike. See [LICENSE-ASSETS](LICENSE-ASSETS)
+for the credit list. Swap in your own four PNGs under `assets/<skin>/` to avoid those terms entirely.

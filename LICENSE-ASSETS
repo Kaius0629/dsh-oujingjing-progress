@@ -1,0 +1,57 @@
+# 美术资源授权 / Asset License
+
+这个仓库里的东西分成两部分，授权不一样。
+
+## 代码 —— MIT
+
+适用：`lib/`、`client.js`、`tools/`、`test/`、以及其它非图片文件。
+
+见 [LICENSE](LICENSE)。你可以商用、闭源、随便改。
+
+## 立绘 —— CC BY-NC-SA 4.0
+
+适用：`assets/` 下的所有图片、`docs/` 下的示意图和演示动图。
+
+这批立绘是「大肥鱼 / 鲸鱼娘」（DeepSeek 拟人形象）的同人二创，按
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 发布。
+
+### 三件事
+
+**1. 署名（BY）**
+
+使用或再分发时，请保留以下署名：
+
+| 作者 | 贡献 | 主页 |
+|---|---|---|
+| 上善无形（上善） | 鲸鱼娘原始角色形象 | https://space.bilibili.com/4456176 |
+| ZipZipPipe | 加入 DeepSeek 元素的女仆鲸鱼娘二次设计 | https://space.bilibili.com/4168597 |
+| YunYueSama | Q 版设定图参考 | https://github.com/YunYueSama/codex-deepseek-pet |
+| xiaoweigen | 设定图改编与整理 | https://github.com/xiaoweigen/deepseek-dafeiyu-assets |
+
+本插件的改编贡献（四态立绘的重新绘制、抠图、上色）由 Kaius0629 完成。
+
+**2. 非商业（NC）**
+
+不得以获取商业利益或金钱报酬为主要目的使用这些图。免费开源插件本身不构成商业用途；
+但如果要拿去做付费产品、付费内容、带广告的商业项目，需要另行取得权利人许可。
+
+**3. 相同方式共享（SA）**
+
+你基于这些图做的演绎作品，必须同样按 CC BY-NC-SA 4.0（或协议允许的兼容许可）发布。
+
+### 上游说明
+
+上游角色、前序设计的权利归各自权利人所有。本仓库不主张对这些形象的所有权，
+只对自己那一层的改编贡献主张 CC BY-NC-SA 4.0。
+
+上游许可记录可参考 https://github.com/xiaoweigen/deepseek-dafeiyu-assets 。
+
+## 换成你自己的形象
+
+如果你想要一套完全属于自己的立绘、不受上述限制：
+
+1. 在 `assets/` 下新建一个目录（名字随意，字母数字下划线）
+2. 放四个 128×128 的 PNG：`idle.png`、`eating.png`、`stuck.png`、`done.png`
+3. 设置页里选这套，或者改 `cordis.patch.yml` 里的 `skin`
+
+插件只认文件名，不在乎图是谁画的。

@@ -170,4 +170,8 @@ check(
 
 const failed = results.filter((r) => !r.ok)
 console.log('\n' + (failed.length ? failed.length + ' failed' : 'all ' + results.length + ' passed'))
+
+// 把 OJJ_STATE_DIR 那个临时目录也删掉，不然每跑一次就留一个
+await rm(process.env.OJJ_STATE_DIR, { recursive: true, force: true }).catch(() => {})
+
 process.exit(failed.length ? 1 : 0)

@@ -20,9 +20,15 @@ __pycache__/
 # 源图（太大，也不该进仓库）
 docs/raw/
 
+# 介绍片的逐帧原图：747 张 60 MB，只留成片和分镜
+docs/video/frames/
+
 # 编辑器
 .vscode/
 .idea/
 *.swp
 .DS_Store
 Thumbs.db
+
+# 换肤前的备份，确认后手动删
+assets/blue.bak/

@@ -12,6 +12,8 @@
 #   staleMs         超过这么久没被写过，就当它根本没在下
 #   knownTotals     手动补总大小，第一次下也能看到百分比和剩余时间
 #   snapshotFile    填了就把每轮状态写一份 JSON 到磁盘，排查用
+#   comfy           要不要顺带盯本地 ComfyUI 的出图进度（默认关，关着零网络请求）
+#   comfyUrl        ComfyUI 地址，默认本机 8188
 
 - insert:
     - id: oujingjing-progress
@@ -26,3 +28,5 @@
         staleMs: 20000
         knownTotals: []
         snapshotFile: ''
+        comfy: false
+        comfyUrl: 'http://127.0.0.1:8188'
